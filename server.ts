@@ -12,6 +12,10 @@ const typeDefs = gql`
     person(id: Int): People
   }
   
+  type Mutation {
+    deleteEquipment(id: String): Equipment
+  }
+  
   type Team {
     id: Int
     manager: String
@@ -64,6 +68,17 @@ const resolvers = {
         person: (parent, args, context, info) => database.people.find((person) => {
             return person.id === args.id
         })
+    },
+    Mutation: {
+        deleteEquipment: (parent, args, context, info) => {
+            const deleted = database.equipments.find(equipment => {
+                return equipment.id === args.id
+            });
+            database.equipments = database.equipments.filter(equipment => {
+                return equipment.id !== args.id
+            });
+            return deleted
+        }
     }
 };
 const server = new ApolloServer({ typeDefs, resolvers });
