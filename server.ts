@@ -20,6 +20,13 @@ const typeDefs = gql`
         new_or_used: String
     ): Equipment
   
+    editEquipment(
+        id: String,
+        user_by: String,
+        count: Int,
+        new_or_used: String
+    ): Equipment
+    
     deleteEquipment(id: String): Equipment
   }
   
@@ -80,6 +87,14 @@ const resolvers = {
         insertEquipment: (parent, args, context, info) => {
             database.equipments.push(args)
             return args
+        },
+        editEquipment: (parent, args, context, info) => {
+            const selected =  database.equipments
+                .find(equipment => {
+                    return equipment.id === args.id
+                })
+            Object.assign(selected, args);
+            return selected;
         },
         deleteEquipment: (parent, args, context, info) => {
             const deleted = database.equipments.find(equipment => {
